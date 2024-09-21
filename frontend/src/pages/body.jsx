@@ -26,7 +26,7 @@ export default function DetailsPage() {
         <Grid item xs={6} md={6} style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
           <Box >
             <Typography variant="h4" gutterBottom>
-              LEARN WHAT U WANT
+              LEARN WHAT you WANT
             </Typography>
             <Typography variant="body1"  color="textSecondary">
             Discover the Joy of Learning a New Language
