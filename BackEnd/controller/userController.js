@@ -166,9 +166,17 @@ const search = async (req, res) => {
 };
 
 const fetchMessage = async (req, res) => {
-  const { senderId, receiverId } = req.params; // Get sender and receiver IDs from request params
+  const { senderId, receiverId } = req.params;
 
   try {
+    // Fetch receiver details
+    const receiver = await User.findById(receiverId);
+    if (!receiver) {
+      return res.status(404).json({ error: 'Receiver not found' });
+    }
+    
+    const receiverName = receiver.name; // Assuming 'name' is the field in User schema
+
     // Query the database for messages between sender and receiver
     const messages = await Message.find({
       $or: [
@@ -177,12 +185,14 @@ const fetchMessage = async (req, res) => {
       ],
     }).sort({ createdAt: 1 }); // Sort by the created timestamp
 
-    res.status(200).json(messages); // Return the messages
+    // Send the messages along with the receiver's name
+    res.status(200).json({ messages, receiverName });
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Error fetching messages' });
   }
 };
+
 
 
 

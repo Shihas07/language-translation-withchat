@@ -14,45 +14,23 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const socket = io("http://localhost:5000"); // Connect to your backend
+// Connect to your backend with socket.io
+const socket = io("http://localhost:5000");
 
 const Message = () => {
   const { id } = useParams(); // Receiver ID
-  const user = useSelector((state) => state.user); 
-  
-  const [messages, setMessages] = useState([]); // Messages state
-  const [input, setInput] = useState(""); // Input state
+  const user = useSelector((state) => state.user); // Current user
 
-  // Function to send message
-  const fetchMessages = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/messages/${user.id}/${id}`
-      );
-      console.log("response",response)
-      setMessages(response.data); // Set messages from API response
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
-  fetchMessages(); 
-  
-  useEffect(() => {
-    fetchMessages(); // Fetch messages when the component mounts
-    socket.emit("joinRoom", id); // Join the room for the conversation
+  const [messages, setMessages] = useState([]);
+  console.log(messages);
+  // Messages state
+  const [input, setInput] = useState(""); // Input state for new message
+  const [name, setName] = useState(""); // Receiver's name
 
-    // Listen for real-time messages
-    socket.on("messageReceived", (message) => {
 
-      setMessages((prevMessages) => [...prevMessages, message]); // Add new message to the state
-    });
-
-    return () => {
-      socket.off("messageReceived"); // Clean up socket listener when component unmounts
-    };
-  }, [id]);
-
-  const sendMessage = (e) => {
+  // Function to fetch messages
+ 
+  const sendMessage = async (e) => {
     e.preventDefault();
 
     if (input.trim()) {
@@ -61,16 +39,47 @@ const Message = () => {
         receiverId: id,
         text: input,
       };
-      fetchMessages()
 
-      socket.emit("sendMessage", messageData); // Emit message to socket server
+      // Emit message to socket server
+      socket.emit("sendMessage", messageData);
+      await  fetchMessages();
+
       setInput(""); // Clear the input field after sending
+
+      // Fetch messages immediately after sending to update chat
+      
+    }
+  };
+  let fetchMessages = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/messages/${user.id}/${id}`
+      );
+      setMessages(response.data.messages); // Set messages from API response
+      setName(response.data.receiverName); // Set receiver's name
+    } catch (error) {
+      console.error("Error fetching messages:", error);
     }
   };
 
-  // Fetch existing messages when the component mounts
+  // fetchMessages();
 
+  useEffect(() => {
+    fetchMessages();
+    // sendMessage()
 
+    socket.emit("joinRoom", id);
+
+    // Listen for real-time messages
+    socket.on("messageReceived", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]); // Add new message to the state
+    });
+
+    // Clean up the socket listener when the component unmounts
+    return () => {
+      socket.off("messageReceived",id);
+    };
+  }, [ messages,id]);
 
   return (
     <Box
@@ -86,7 +95,9 @@ const Message = () => {
       }}
     >
       <Box sx={{ padding: "16px", backgroundColor: "green", color: "#fff" }}>
-        <Typography variant="h6" align="center">Chat Room</Typography>
+        <Typography variant="h6" align="center">
+          Chat with {name}
+        </Typography>
       </Box>
 
       {/* Display the messages */}
@@ -102,7 +113,7 @@ const Message = () => {
           {messages.map((message, index) => (
             <ListItem key={index}>
               <ListItemText
-                primary={message.senderId === user.id ? "You" : `User ${message.senderId}`}
+                primary={message.senderId === user.id ? "You" : `${name}`}
                 secondary={message.message}
               />
             </ListItem>
