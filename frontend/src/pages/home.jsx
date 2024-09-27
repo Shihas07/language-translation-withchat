@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import search from '../services/user/Search';
-import Navbar from './navabr';
-import { Card, CardContent, CardHeader, Avatar, Button, Typography } from '@mui/material';
-import Footer from './footer';
-import DetailsPage from './body';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import search from "../services/user/Search";
+import Navbar from "./navabr";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Avatar,
+  Button,
+  Typography,
+} from "@mui/material";
+import Footer from "./footer";
+import DetailsPage from "./body";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [users, setUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const user = useSelector((state) => state.user);
   // const [click,setClick]=useState(false)
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const handleSearchClick = async () => {
     try {
@@ -21,9 +28,9 @@ export default function Home() {
       if (response) {
         setUsers(response.data); // Assuming response.data contains the users
       }
-      console.log('Search response:', response);
+      console.log("Search response:", response);
     } catch (error) {
-      console.error('Search error:', error);
+      console.error("Search error:", error);
     }
   };
 
@@ -35,18 +42,11 @@ export default function Home() {
     setOpenModal(false);
   };
 
-  const Message=(id)=>{
-    console.log("id",id)
-    
+  const Message = (id) => {
+    console.log("id", id);
 
-       
-         
-
-      
     navigate(`/message/${id}`, { state: { id } });
-
-       
-  }
+  };
 
   return (
     <div>
@@ -69,7 +69,7 @@ export default function Home() {
                 title={
                   <Typography
                     variant="h6"
-                    sx={{ color: 'blue', fontWeight: 'bold' }}
+                    sx={{ color: "blue", fontWeight: "bold" }}
                   >
                     {user.name}
                   </Typography>
@@ -78,10 +78,15 @@ export default function Home() {
               />
               <CardContent>
                 <Typography variant="body2" color="text.secondary">
-                  {user.description || 'Hello learner, please connect.'}
+                  {user.description || "Hello learner, please connect."}
                 </Typography>
               </CardContent>
-              <Button variant="contained" color="success" sx={{ m: 2 }} onClick={()=>Message(user._id)} >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ m: 2 }}
+                onClick={() => Message(user._id)}
+              >
                 Message
               </Button>
             </Card>
@@ -90,7 +95,7 @@ export default function Home() {
       ) : (
         <DetailsPage />
       )}
-      
+
       <Footer />
     </div>
   );

@@ -16,7 +16,7 @@ export default function Navbar({
   searchQuery,
   setSearchQuery,
   handleSearchClick,
-  handleModalOpen,
+  handleModalOpen, 
   openModal,
   handleModalClose
 }) {

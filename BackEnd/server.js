@@ -11,7 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // Update to your frontend URL
+    origin: 'http://localhost:5174', // Update to your frontend URL
     methods: ['GET', 'POST'],
     credentials: true,
   }
@@ -20,7 +20,7 @@ const io = new Server(server, {
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:5173', // Update to your frontend URL
+  origin: 'http://localhost:5174', 
   credentials: true,
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']

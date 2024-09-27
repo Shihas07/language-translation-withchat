@@ -14,17 +14,17 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-// Connect to your backend with socket.io
+
 const socket = io("http://localhost:5000");
 
 const Message = () => {
-  const { id } = useParams(); // Receiver ID
-  const user = useSelector((state) => state.user); // Current user
+  const { id } = useParams(); 
+  const user = useSelector((state) => state.user); 
 
   const [messages, setMessages] = useState([]);
   console.log(messages);
   // Messages state
-  const [input, setInput] = useState(""); // Input state for new message
+  const [input, setInput] = useState(""); 
   const [name, setName] = useState(""); // Receiver's name
 
 
@@ -62,7 +62,7 @@ const Message = () => {
     }
   };
 
-  // fetchMessages();
+  fetchMessages();
 
   useEffect(() => {
     fetchMessages();

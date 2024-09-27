@@ -47,12 +47,12 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if user is blocked
+    
     if (user.isBlocked === true) {
       return res.status(400).json({ message: "User is blocked, contact admin" });
     }
 
-    // Compare passwords
+  
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
